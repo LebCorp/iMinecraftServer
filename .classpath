@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="libs/authlib-1.5.21.jar"/>
+	<classpathentry kind="lib" path="libs/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="libs/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="libs/guava-17.0.jar"/>
+	<classpathentry kind="lib" path="libs/netty-all-4.0.23.Final.jar"/>
+	<classpathentry kind="lib" path="libs/oshi-core-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/benjaminlesieux/Desktop/coding/iMinecraftSercer/libs/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="/Users/benjaminlesieux/Desktop/coding/iMinecraftSercer/libs/snakeyaml-1.10-android.jar"/>
+	<classpathentry kind="lib" path="/Users/benjaminlesieux/Desktop/coding/iMinecraftSercer/libs/ebean-2.7.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
