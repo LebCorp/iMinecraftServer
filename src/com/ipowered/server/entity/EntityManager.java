@@ -4,20 +4,20 @@ import java.util.HashMap;
 
 public final class EntityManager {
 
-	private final HashMap<Integer, IEntity> entities = new HashMap<Integer, IEntity>();
+	public static final HashMap<Integer, IEntity> entities = new HashMap<Integer, IEntity>();
 	
 	public EntityManager() {
 	}
 	
-	void register(IEntity entity) {
+	public void register(IEntity entity) {
 		entities.put(entity.getEntityId(), entity);
 	}
 	
-	void remove(IEntity entity) {
+	public void remove(IEntity entity) {
 		entities.remove(entity.getEntityId());
 	}
 	
-	HashMap<Integer, IEntity> getEntities() {
+	public static HashMap<Integer, IEntity> getEntities() {
 		return entities;
 	}
 }

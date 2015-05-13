@@ -1,0 +1,10 @@
+maxPlayers: '24'
+port: '25565'
+ip: localhost
+worldType: normal
+generateStructures: 'true'
+allowEnd: 'true'
+allowNether: 'true'
+whitelist: 'false'
+motd: A default IPowered server
+serverName: IPowered

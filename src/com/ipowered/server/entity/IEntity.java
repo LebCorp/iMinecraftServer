@@ -249,7 +249,7 @@ public abstract class IEntity implements Entity {
 
 	@Override
 	public boolean eject() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		return this.passengers.get(0) != null ? this.passengers.remove(0) == null : false;
 	}
 
 	@Override
@@ -310,9 +310,14 @@ public abstract class IEntity implements Entity {
 		
 		entity.passengers.remove(this);
 		
+		boolean was = false;
+		
+		if(vehicule != null)
+			was = true;
+		
 		this.vehicule = null;
 		
-		return true;
+		return was;
 	}
 
 	@Override

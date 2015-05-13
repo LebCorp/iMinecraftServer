@@ -10,13 +10,19 @@ import org.bukkit.map.MapView;
 public class IMapCanvas implements MapCanvas {
 
 	private MapView view;
-	
-	private MapCursorCollection mpCollection;
-	
+
+	protected static final int MAP_SIZE = 128;
+
+	private MapCursorCollection mpCollection = new MapCursorCollection();
+
+	private byte[] buffer = new byte[MAP_SIZE * MAP_SIZE];
+
+	private byte[] base;
+
 	public IMapCanvas(MapView view) {
 		this.view = view;
 	}
-	
+
 	@Override
 	public MapView getMapView() {
 		return this.view;
@@ -34,26 +40,34 @@ public class IMapCanvas implements MapCanvas {
 
 	@Override
 	public void setPixel(int x, int y, byte color) {
-		
+		if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE)
+			return;
+		if (buffer[y * MAP_SIZE + x] != color) {
+			buffer[y * MAP_SIZE + x] = color;
+			// TODO: mark dirty
+		}
 	}
 
 	@Override
 	public byte getPixel(int x, int y) {
-		return 0;
+		if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE)
+			return 0;
+		return buffer[y * MAP_SIZE + x];
 	}
 
 	@Override
 	public byte getBasePixel(int x, int y) {
-		return 0;
+		if (x < 0 || y < 0 || x >= MAP_SIZE || y >= MAP_SIZE) return 0;
+		return base[y * MAP_SIZE + x];
 	}
 
 	@Override
 	public void drawImage(int x, int y, Image image) {
-		
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
 	public void drawText(int x, int y, MapFont font, String text) {
-		
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }

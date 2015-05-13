@@ -2,6 +2,7 @@ package com.ipowered.server;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,7 +15,9 @@ import java.util.logging.Logger;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -22,14 +25,19 @@ import org.bukkit.UnsafeValues;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.block.Block;
+import org.bukkit.block.BrewingStand;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.help.HelpMap;
+import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFactory;
@@ -37,6 +45,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.map.MapView;
+import org.bukkit.material.MaterialData;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
@@ -48,7 +58,6 @@ import org.bukkit.util.CachedServerIcon;
 
 import com.avaje.ebean.config.ServerConfig;
 import com.google.common.collect.Lists;
-import com.ipowered.server.inventory.meta.IBookMeta;
 
 
 public class IServer implements Server {
@@ -61,20 +70,27 @@ public class IServer implements Server {
 	
 	public static final Logger logger = Logger.getLogger("IPowered");
 	
-	private IConfig server_config = IConfig.getServerConfig();
+	private IConfig server_config;
 	
 	private ItemFactory factory = new IItemFactory();
 	
-	private boolean loaded;
+	private static boolean loaded;
+	
+	private ServerConfig config;
+	
+	private List<Recipe> recipes = Lists.newArrayList();
 	
 	public IServer() {
+		server_config = IConfig.getServerConfig();
+		if(!loaded)
+		this.load();
 	}
 	
 	public void load() {
 
-		if (loaded == true) {
+		if (loaded) {
 			return;
-		} else {
+		} else if (!loaded){
 
 			server_config.set("maxPlayers", "24");
 			server_config.set("port", "25565");
@@ -84,28 +100,20 @@ public class IServer implements Server {
 			server_config.set("allowEnd", "true");
 			server_config.set("allowNether", "true");
 			server_config.set("whitelist", "false");
-			server_config.set("motd", "A default IPowered server'");
+			server_config.set("motd", "A default IPowered server");
 			server_config.set("serverName", "IPowered");
 
+			server_config.save();
+			
 			loaded = true;
 		}
 	}
 	
 	public static void main(String[] args) {
 		
-		Bukkit.setServer(new IServer());
+		IServer server = new IServer();
 		
-		ItemStack book = new ItemStack(Material.BOOK);
-		BookMeta meta = (BookMeta) book.getItemMeta();
-		meta.setDisplayName("Book");
-		meta.setLore(Arrays.asList("A simple book !"));
-		meta.setTitle("Book by Benjamin");
-		meta.setAuthor("LebCorp");
-		
-		if(book.setItemMeta(meta))
-		System.out.println(meta.getDisplayName());
-		
-		System.out.println(book.getItemMeta().getDisplayName());
+		Bukkit.setServer(server);
 	}
 
 	@Override
@@ -122,7 +130,7 @@ public class IServer implements Server {
 
 	@Override
 	public String getName() {
-		return "IServer (implementing bukkit api)";
+		return "IServer (server)";
 	}
 
 	@Override
@@ -137,8 +145,7 @@ public class IServer implements Server {
 
 	@Override
 	public Player[] _INVALID_getOnlinePlayers() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.onlinePlayers.toArray(new Player[onlinePlayers.size()]);
 	}
 
 	@Override
@@ -367,7 +374,25 @@ public class IServer implements Server {
 
 	@Override
 	public void reload() {
-		// TODO Auto-generated method stub
+		
+		System.out.println("Stopping server !");
+		System.out.println("Saving Players...");
+		savePlayers();
+		System.out.println("Done !");
+		
+		System.out.println("Loading config...");
+		load();
+		System.out.println("Done !");
+		
+		System.out.println("Configuring DbConfig...");
+		this.configureDbConfig(this.config);
+		
+		System.out.println("Reseting Recipes...");
+		this.resetRecipes();
+		this.start();
+	}
+
+	private void start() {
 		
 	}
 
@@ -384,8 +409,7 @@ public class IServer implements Server {
 
 	@Override
 	public void savePlayers() {
-		// TODO Auto-generated method stub
-		
+		List<Player> backup = (List<Player>) this.onlinePlayers;
 	}
 
 	@Override
@@ -397,19 +421,17 @@ public class IServer implements Server {
 
 	@Override
 	public void configureDbConfig(ServerConfig config) {
-		// TODO Auto-generated method stub
-		
+		if(config == null)
+		this.config = new ServerConfig();
 	}
 
 	@Override
 	public boolean addRecipe(Recipe recipe) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.recipes.add(recipe);
 	}
 
 	@Override
 	public List<Recipe> getRecipesFor(ItemStack result) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

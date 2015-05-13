@@ -32,6 +32,6 @@ public class IGuardian extends IMonster implements Guardian {
 
 	@Override
 	public Sound getDeathSound() {
-		return Sound.GUARDIANT_DEATH;
+		return Sound.GUARDIAN_DEATH;
 	}
 }

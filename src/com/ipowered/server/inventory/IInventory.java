@@ -4,18 +4,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+
+import com.google.common.collect.Lists;
 
 public class IInventory implements Inventory {
 
@@ -219,21 +223,17 @@ public class IInventory implements Inventory {
 
 	@Override
 	public HashMap<Integer, ? extends ItemStack> all(int materialId) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public HashMap<Integer, ? extends ItemStack> all(Material material)
-			throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-		return null;
+	public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException {
+		return this.all(material.getId());
 	}
 
 	@Override
 	public HashMap<Integer, ? extends ItemStack> all(ItemStack item) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.all(item.getType());
 	}
 
 	@Override
@@ -257,20 +257,23 @@ public class IInventory implements Inventory {
 
 	@Override
 	public int firstEmpty() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.first(0);
 	}
 
 	@Override
 	public void remove(int materialId) {
-		// TODO Auto-generated method stub
-
+		ItemStack item = new ItemStack(materialId);
+		
+		for(ItemStack i : slots) {
+			if(i == item) {
+				slots[first(i)] = null;
+			}
+		}
 	}
 
 	@Override
 	public void remove(Material material) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
-
+		this.remove(material.getId());
 	}
 
 	@Override
@@ -328,12 +331,19 @@ public class IInventory implements Inventory {
 
 	@Override
 	public ListIterator<ItemStack> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<ItemStack> items = Lists.newArrayList(this.slots);
+		
+		ListIterator<ItemStack> iterator = items.listIterator();
+		
+		return iterator;
 	}
 
 	@Override
 	public ListIterator<ItemStack> iterator(int index) {
-		return null;
+		
+		List<ItemStack> byIndex = Lists.newArrayList(slots);
+		
+		return byIndex.listIterator(index);
 	}
 }

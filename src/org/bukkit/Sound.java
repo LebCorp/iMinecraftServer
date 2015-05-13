@@ -120,7 +120,7 @@ public enum Sound {
     
     /**Added guardian sounds*/
     GUARDIAN_HURT,
-    GUARDIANT_DEATH,
+    GUARDIAN_DEATH,
     
     IRONGOLEM_DEATH,
     IRONGOLEM_HIT,
